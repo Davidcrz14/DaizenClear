@@ -19,7 +19,7 @@
 ## Instalación
 
 1. Descarga la última versión desde la carpeta de compilación (`bin/Debug/net8.0-windows`)
-2. Ejecuta `MemoryCleaner.exe` como administrador.
+2. Ejecuta `DaizenClear.exe` como administrador.
 3. La primera vez, Windows puede mostrar una advertencia de seguridad debido al acceso de bajo nivel
 
 ## Uso
