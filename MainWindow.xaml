@@ -1,0 +1,368 @@
+<Window x:Class="MemoryCleaner.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:ui="http://schemas.modernwpf.com/2019"
+        Title="DaizenClear"
+        Height="700"
+        Width="500"
+        WindowStartupLocation="CenterScreen"
+        ResizeMode="NoResize"
+        Icon="Resources/icon.ico"
+        Background="White">
+
+    <Grid Margin="25">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Header -->
+        <StackPanel Grid.Row="0" Margin="0,0,0,30">
+            <Grid Margin="0,0,0,15">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <Border Grid.Column="0"
+                        Background="#1a1a1a"
+                        CornerRadius="12"
+                        Width="50"
+                        Height="50"
+                        Margin="0,0,15,0">
+                    <TextBlock Text="🧹"
+                               FontSize="24"
+                               HorizontalAlignment="Center"
+                               VerticalAlignment="Center"/>
+                </Border>
+
+                <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                    <TextBlock Text="DaizenClear"
+                               FontSize="28"
+                               FontWeight="Bold"
+                               Foreground="#1a1a1a"/>
+                    <TextBlock Text="Limpieza inteligente de memoria RAM"
+                               FontSize="14"
+                               Foreground="#666666"
+                               Margin="0,5,0,0"/>
+                </StackPanel>
+            </Grid>
+
+            <!-- Status Bar -->
+            <Border Background="#f8f9fa"
+                    CornerRadius="8"
+                    Padding="15,12"
+                    BorderBrush="#e9ecef"
+                    BorderThickness="1">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <StackPanel Grid.Column="0">
+                        <TextBlock x:Name="LastCleanText"
+                                   Text="Última limpieza: Nunca"
+                                   FontSize="12"
+                                   Foreground="#495057"
+                                   FontWeight="Medium"/>
+                        <TextBlock x:Name="StatusText"
+                                   Text="Estado: Listo"
+                                   FontSize="11"
+                                   Foreground="#6c757d"
+                                   Margin="0,2,0,0"/>
+                    </StackPanel>
+
+                    <Border Grid.Column="1"
+                            Background="#28a745"
+                            CornerRadius="4"
+                            Padding="8,4">
+                        <TextBlock Text="ONLINE"
+                                   FontSize="10"
+                                   FontWeight="Bold"
+                                   Foreground="White"/>
+                    </Border>
+                </Grid>
+            </Border>
+        </StackPanel>
+
+        <!-- Memory Cards -->
+        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+            <StackPanel>
+                <!-- RAM Usage -->
+                <Border Background="White"
+                        CornerRadius="12"
+                        Padding="20"
+                        Margin="0,0,0,15"
+                        BorderBrush="#e9ecef"
+                        BorderThickness="1"
+                        Effect="{ui:ThemeResource SystemControlElevationBorderBrush}">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+
+                        <Grid Grid.Row="0" Margin="0,0,0,15">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <Border Grid.Column="0"
+                                    Background="#007bff"
+                                    CornerRadius="6"
+                                    Width="32"
+                                    Height="32"
+                                    Margin="0,0,12,0">
+                                <TextBlock Text="💾"
+                                           FontSize="16"
+                                           HorizontalAlignment="Center"
+                                           VerticalAlignment="Center"/>
+                            </Border>
+
+                            <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                <TextBlock Text="Memoria RAM"
+                                           FontSize="16"
+                                           FontWeight="SemiBold"
+                                           Foreground="#1a1a1a"/>
+                                <TextBlock Text="Memoria física del sistema"
+                                           FontSize="12"
+                                           Foreground="#6c757d"/>
+                            </StackPanel>
+                        </Grid>
+
+                        <Grid Grid.Row="1" Margin="0,0,0,10">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+
+                            <Border Grid.Column="0"
+                                    Background="#f8f9fa"
+                                    CornerRadius="8"
+                                    Height="12"
+                                    Margin="0,0,10,0"
+                                    x:Name="RamProgressBackground">
+                                <Border Background="{Binding RamUsageColor}"
+                                        CornerRadius="8"
+                                        HorizontalAlignment="Left">
+                                    <Border.Width>
+                                        <MultiBinding Converter="{StaticResource PercentageToWidthConverter}">
+                                            <Binding Path="RamUsagePercent"/>
+                                            <Binding Path="ActualWidth" ElementName="RamProgressBackground"/>
+                                        </MultiBinding>
+                                    </Border.Width>
+                                </Border>
+                            </Border>
+                            <TextBlock Grid.Column="1"
+                                       Text="{Binding RamUsagePercent, StringFormat={}{0:F1}%}"
+                                       FontSize="14"
+                                       FontWeight="Bold"
+                                       Foreground="{Binding RamUsageColor}"/>
+                        </Grid>
+
+                        <TextBlock Grid.Row="2"
+                                   Text="{Binding RamUsageText}"
+                                   FontSize="12"
+                                   Foreground="#6c757d"/>
+                    </Grid>
+                </Border>
+
+                <!-- Virtual Memory -->
+                <Border Background="White"
+                        CornerRadius="12"
+                        Padding="20"
+                        Margin="0,0,0,15"
+                        BorderBrush="#e9ecef"
+                        BorderThickness="1"
+                        Effect="{ui:ThemeResource SystemControlElevationBorderBrush}">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+
+                        <Grid Grid.Row="0" Margin="0,0,0,15">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <Border Grid.Column="0"
+                                    Background="#6f42c1"
+                                    CornerRadius="6"
+                                    Width="32"
+                                    Height="32"
+                                    Margin="0,0,12,0">
+                                <TextBlock Text="🔄"
+                                           FontSize="16"
+                                           HorizontalAlignment="Center"
+                                           VerticalAlignment="Center"/>
+                            </Border>
+
+                            <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                <TextBlock Text="Memoria Virtual"
+                                           FontSize="16"
+                                           FontWeight="SemiBold"
+                                           Foreground="#1a1a1a"/>
+                                <TextBlock Text="Archivo de paginación del sistema"
+                                           FontSize="12"
+                                           Foreground="#6c757d"/>
+                            </StackPanel>
+                        </Grid>
+
+                        <Grid Grid.Row="1" Margin="0,0,0,10">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+
+                            <Border Grid.Column="0"
+                                    Background="#f8f9fa"
+                                    CornerRadius="8"
+                                    Height="12"
+                                    Margin="0,0,10,0"
+                                    x:Name="VirtualProgressBackground">
+                                <Border Background="#6f42c1"
+                                        CornerRadius="8"
+                                        HorizontalAlignment="Left">
+                                    <Border.Width>
+                                        <MultiBinding Converter="{StaticResource PercentageToWidthConverter}">
+                                            <Binding Path="VirtualMemoryUsagePercent"/>
+                                            <Binding Path="ActualWidth" ElementName="VirtualProgressBackground"/>
+                                        </MultiBinding>
+                                    </Border.Width>
+                                </Border>
+                            </Border>
+                            <TextBlock Grid.Column="1"
+                                       Text="{Binding VirtualMemoryUsagePercent, StringFormat={}{0:F1}%}"
+                                       FontSize="14"
+                                       FontWeight="Bold"
+                                       Foreground="#6f42c1"/>
+                        </Grid>
+
+                        <TextBlock Grid.Row="2"
+                                   Text="{Binding VirtualMemoryUsageText}"
+                                   FontSize="12"
+                                   Foreground="#6c757d"/>
+                    </Grid>
+                </Border>
+
+                <!-- System Cache -->
+                <Border Background="White"
+                        CornerRadius="12"
+                        Padding="20"
+                        Margin="0,0,0,15"
+                        BorderBrush="#e9ecef"
+                        BorderThickness="1"
+                        Effect="{ui:ThemeResource SystemControlElevationBorderBrush}">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+
+                        <Grid Grid.Row="0" Margin="0,0,0,15">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <Border Grid.Column="0"
+                                    Background="#fd7e14"
+                                    CornerRadius="6"
+                                    Width="32"
+                                    Height="32"
+                                    Margin="0,0,12,0">
+                                <TextBlock Text="⚡"
+                                           FontSize="16"
+                                           HorizontalAlignment="Center"
+                                           VerticalAlignment="Center"/>
+                            </Border>
+
+                            <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                <TextBlock Text="Caché del Sistema"
+                                           FontSize="16"
+                                           FontWeight="SemiBold"
+                                           Foreground="#1a1a1a"/>
+                                <TextBlock Text="Caché de archivos y datos del sistema"
+                                           FontSize="12"
+                                           Foreground="#6c757d"/>
+                            </StackPanel>
+                        </Grid>
+
+                        <Grid Grid.Row="1" Margin="0,0,0,10">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+
+                            <Border Grid.Column="0"
+                                    Background="#f8f9fa"
+                                    CornerRadius="8"
+                                    Height="12"
+                                    Margin="0,0,10,0"
+                                    x:Name="CacheProgressBackground">
+                                <Border Background="#fd7e14"
+                                        CornerRadius="8"
+                                        HorizontalAlignment="Left">
+                                    <Border.Width>
+                                        <MultiBinding Converter="{StaticResource PercentageToWidthConverter}">
+                                            <Binding Path="CacheUsagePercent"/>
+                                            <Binding Path="ActualWidth" ElementName="CacheProgressBackground"/>
+                                        </MultiBinding>
+                                    </Border.Width>
+                                </Border>
+                            </Border>
+                            <TextBlock Grid.Column="1"
+                                       Text="{Binding CacheUsagePercent, StringFormat={}{0:F1}%}"
+                                       FontSize="14"
+                                       FontWeight="Bold"
+                                       Foreground="#fd7e14"/>
+                        </Grid>
+
+                        <TextBlock Grid.Row="2"
+                                   Text="{Binding CacheUsageText}"
+                                   FontSize="12"
+                                   Foreground="#6c757d"/>
+                    </Grid>
+                </Border>
+            </StackPanel>
+        </ScrollViewer>
+
+        <!-- Buttons -->
+        <Grid Grid.Row="2" Margin="0,20,0,0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <Button Grid.Column="0"
+                    Content="Configuración"
+                    Style="{StaticResource ModernButton}"
+                    Background="#f8f9fa"
+                    Foreground="#495057"
+                    BorderBrush="#dee2e6"
+                    BorderThickness="1"
+                    Click="SettingsButton_Click"
+                    Margin="0,0,10,0"
+                    Height="45"
+                    FontWeight="Medium"/>
+
+            <Button Grid.Column="1"
+                    Content="Limpiar Memoria"
+                    Style="{StaticResource ModernButton}"
+                    Background="#007bff"
+                    Foreground="White"
+                    Click="CleanButton_Click"
+                    Height="45"
+                    FontWeight="Medium"/>
+        </Grid>
+    </Grid>
+
+</Window>
